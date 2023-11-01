@@ -2,8 +2,6 @@
 
 # deps: hq, curl
 
-#curl https://genius.com/Gezebelle-gaburgably-loser-lyrics | hq '[class="Lyrics__Container-sc-1ynbvzw-1 kUgSbL"]' text
-
 prepare_url () {
     for ((i=1; i<=$#; i++)); do
         search_array+=("${!i,,}")
@@ -23,7 +21,11 @@ get_lyrics () {
     fi
 }
 
+usage () {
+    printf "lyricli <artist> <song>\n"
+}
+
 case $1 in
+    --help | -h) usage;;
     *) get_lyrics "$@" ;;
-    --help | -h) ;;
 esac
