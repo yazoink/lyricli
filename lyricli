@@ -2,7 +2,7 @@
 
 # deps: hq, curl
 
-prepare_url () {
+prepare_url_lyrics () {
     for ((i=1; i<=$#; i++)); do
         search_array+=("${!i,,}")
     done
@@ -12,7 +12,7 @@ prepare_url () {
 }
 
 get_lyrics () {
-    url="$(prepare_url "$@")"
+    url="$(prepare_url_lyrics "$@")"
     html_data="$(curl -s https://genius.com/"$url"-lyrics)"
     if [[ "$html_data" == *'class="Lyrics__Container-sc-1ynbvzw-1 kUgSbL"'* ]]; then
         printf "%s\n" "$(echo "$html_data" | hq '[class="Lyrics__Container-sc-1ynbvzw-1 kUgSbL"]' text)"
@@ -26,6 +26,6 @@ usage () {
 }
 
 case $1 in
-    --help | -h) usage;;
+    --help | -h | "") usage ;;
     *) get_lyrics "$@" ;;
 esac
