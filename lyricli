@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# deps: hq, curl
+
+#curl https://genius.com/Gezebelle-gaburgably-loser-lyrics | hq '[class="Lyrics__Container-sc-1ynbvzw-1 kUgSbL"]' text
+
+prepare_url () {
+    for ((i=1; i<=$#; i++)); do
+        search_array+=("${!i,,}")
+    done
+    search_array[0]="${search_array[0]^}"
+    url="${search_array[*]}"
+    echo "${url// /-}"
+}
+
+get_lyrics () {
+    url="$(prepare_url "$@")"
+    html_data="$(curl -s https://genius.com/"$url"-lyrics)"
+    if [[ "$html_data" == *'class="Lyrics__Container-sc-1ynbvzw-1 kUgSbL"'* ]]; then
+        printf "%s\n" "$(echo "$html_data" | hq '[class="Lyrics__Container-sc-1ynbvzw-1 kUgSbL"]' text)"
+    else
+        printf "No results found.\n"
+    fi
+}
+
+case $1 in
+    *) get_lyrics "$@" ;;
+    --help | -h) ;;
+esac
